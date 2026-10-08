@@ -6,6 +6,31 @@
     <title>Kanban</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body></body>
+  <body>
+    <div class="top-panel">
+      <h2 class="project-title">Kanban</h2>
+      <button class="addBtn" id="addBtn">Add new Task</button>
+    </div>
+    <div class="task-box">
+      <div class="box" id="todoBox">
+        <div class="title-box">
+          <p class="todo-title" id="todoTitle">To Do</p>
+          <p class="todo-count" id="todoCount">1</p>
+        </div>
+      </div>
+      <div class="box" id="progressBox">
+          <div class="title-box">
+            <p class="progress-title" id="progressTitle">In Progress</p>
+            <p class="progress-count" id="progressCount">1</p>
+          </div>
+      </div>
+      <div class="box" id="doneBox">
+          <div class="title-box">
+            <p class="done-title" id="doneTitle">Done</p>
+            <p class="done-count" id="doneCount">1</p>
+          </div>
+      </div>
+    </div>
+  </body>
   <script src="script.js"></script>
 </html>
