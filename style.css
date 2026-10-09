@@ -79,8 +79,20 @@ h2 {
 .task {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   padding: 10px;
   gap: 10px;
+  background-color: rgba(66, 60, 60, 0.567);
+  border-radius: 10px;
+  margin: 8px 6px;
+}
+
+.task-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
 .task-btns {
@@ -130,13 +142,8 @@ h2 {
   transform: translate(-50%, -50%);
 }
 
-
 .hidden {
   display: none;
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .inp-box input {
@@ -149,7 +156,7 @@ h2 {
 .inp-box button {
   padding: 5px;
   border-radius: 10px;
-  font-family:'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 16px;
 }
 
@@ -157,4 +164,19 @@ h2 {
   border: 1px solid var(--border-button-color);
 }
 
+.task-title {
+  font-size: 10px;
+  background-color: rgb(230, 213, 213);
+  color: #1a1a1a;
+  padding: 2px 6px;
+  border-radius: 6px;
+  align-self: flex-start;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 10%;
+}
 
+.task-desc {
+  font-size: 14px;
+  overflow: hidden;
+}

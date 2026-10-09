@@ -22,14 +22,14 @@
   <main>
     <div class="input-box hidden">
       <div class="inp-box">
-          <input type="text" placeholder="Enter task title here" id="input-title">
-          <input type="text" placeholder="Enter name of the task" id="input-task">
-          <div class="inpBtns">
-            <button id="addTaskBtn">Add</button>
-            <button id = "closeBtn">Close</button>
-          </div>
+        <input type="text" placeholder="Enter task title here" id="input-title">
+        <input type="text" placeholder="Enter name of the task" id="input-task">
+        <div class="inpBtns">
+          <button id="addTaskBtn">Add</button>
+          <button id="closeBtn">Close</button>
+        </div>
       </div>
-      
+
     </div>
     <div class="task-box">
       <div class="box" id="todoBox">
@@ -39,6 +39,17 @@
           <p class="todo-count" id="todoCount">1</p>
         </div>
         <div class="task-list" id="todoList">
+          <div class="task">
+            <div class="task-content">
+              <p class="task-desc">task is here blah blah blah...</p>
+              <p class="task-title">Home and blah blah hsf sd skf k slkf ala ls slsl eo sl lskd lsk iels nnsl lsei lsds
+                epsem sk sk ks ks sk eu iwe is ie ks ei oe sk skljf lksjf lie
+              </p>
+            </div>
+            <div class="task-btns">
+              <button class="deleteBtn">Delete</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="box" id="progressBox">
@@ -54,10 +65,11 @@
           <p class="done-title" id="doneTitle">Done</p>
           <p class="done-count" id="doneCount">1</p>
         </div>
+        <div class="task-list" id="doneList"></div>
       </div>
     </div>
   </main>
+  <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 
 </html>
