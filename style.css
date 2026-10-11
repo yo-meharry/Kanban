@@ -173,7 +173,7 @@ h2 {
   align-self: flex-start;
   overflow: hidden;
   white-space: nowrap;
-  max-width: 10%;
+  max-width: 20%;
 }
 
 .task-desc {
