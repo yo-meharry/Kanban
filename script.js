@@ -1,6 +1,26 @@
 let data = [];
 let editingId = null;
 
+const todo = document.querySelector("#todoBox");
+const progress = document.querySelector("#progressBox");
+const done = document.querySelector("#doneBox");
+
+function dragStart(box) {
+  box.addEventListener("dragenter", (e) => {
+    e.preventDefault();
+    box.classList.add("draggable");
+  });
+
+  box.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    box.classList.remove("draggable");
+  });
+}
+
+dragStart(todo);
+dragStart(progress);
+dragStart(done);
+
 function createId() {
   return String(Date.now() + Math.floor(Math.random() * 1000));
 }
@@ -76,8 +96,9 @@ function renderTasks() {
     const taskElement = document.createElement("div");
     taskElement.classList.add("task");
     taskElement.setAttribute("id", `task${task.id}`);
+    taskElement.setAttribute("draggable", "true");
     taskElement.innerHTML = `
-      <div class="task-content">
+      <div class="task-content" >
           <p class="task-desc">${task.desc}</p>
           <p class="task-title">${task.title}</p>
        </div>
@@ -86,6 +107,7 @@ function renderTasks() {
         <button class="deleteBtn" onclick = "deleteTask('${task.id}')">Delete</button>
       </div>
     `;
+
     todoList.appendChild(taskElement);
   });
 }
