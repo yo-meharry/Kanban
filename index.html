@@ -9,54 +9,43 @@
 </head>
 
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Kanban</h1>
-      </div>
-      <div class="nav-add-button">
-        <button class="addBtn" id="addBtn">Add new Task</button>
-      </div>
-    </nav>
-  </header>
   <main>
-    <div class="input-box hidden">
-      <div class="inp-box">
-        <input type="text" placeholder="Enter task title here" id="input-title">
-        <input type="text" placeholder="Enter name of the task" id="input-task">
-        <div class="inpBtns">
-          <button id="addTaskBtn">Add</button>
-          <button id="closeBtn">Close</button>
+    <nav>
+      <div class="left">Kanban</div>
+      <div class="right" id="toggle-modal"><button>Add Task</button></div>
+    </nav>
+    <section class="board">
+      <div id="todo" class="task-column">
+        <div class="heading">
+          <div class="left">To Do</div>
+          <div class="right">Count</div>
         </div>
       </div>
 
-    </div>
-    <div class="task-box">
-      <div class="box" id="todoBox">
+      <div id="progress" class="task-column">
+        <div class="heading">
+          <div class="left">In Progress</div>
+          <div class="right">Count</div>
+        </div>
+      </div>
 
-        <div class="title-box">
-          <p class="todo-title" id="todoTitle">To Do</p>
-          <p class="todo-count" id="todoCount">1</p>
-        </div>
-        <div class="task-list" id="todoList"></div>
-      </div>
-      <div class="box" id="progressBox">
-        <div class="title-box">
-          <p class="progress-title" id="progressTitle">In Progress</p>
-          <p class="progress-count" id="progressCount">1</p>
-        </div>
-        <div class="task-list" id="progressList">
+      <div id="done" class="task-column">
+        <div class="heading">
+          <div class="left">Done</div>
+          <div class="right">Count</div>
         </div>
       </div>
-      <div class="box" id="doneBox">
-        <div class="title-box">
-          <p class="done-title" id="doneTitle">Done</p>
-          <p class="done-count" id="doneCount">1</p>
-        </div>
-        <div class="task-list" id="doneList"></div>
-      </div>
-    </div>
+    </section>
   </main>
+
+  <div class="modal add-new-task">
+    <div class="bg"></div>
+    <div class="center">
+      <input type="text" placeholder="Task Name" id="task-name" />
+      <textarea placeholder="Task Description" id="task-desc"></textarea>
+      <button id="add-new-task" class="add-task-btn">Add Task</button>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 

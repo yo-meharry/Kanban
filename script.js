@@ -1,36 +1,126 @@
 let data = [];
 let editingId = null;
+let dragElement = null;
 
-const todo = document.querySelector("#todoBox");
-const progress = document.querySelector("#progressBox");
-const done = document.querySelector("#doneBox");
+function saveData() {
+  localStorage.setItem("kanban-data", JSON.stringify(data));
+}
 
-function dragStart(box) {
-  box.addEventListener("dragenter", (e) => {
+function loadData() {
+  const saved = localStorage.getItem("kanban-data");
+  if (saved) {
+    data = JSON.parse(saved);
+  }
+}
+
+function addDragEventOnColumn(column, status) {
+  column.addEventListener("dragenter", (e) => {
     e.preventDefault();
-    box.classList.add("draggable");
+    column.classList.add("hover-over");
   });
 
-  box.addEventListener("dragleave", (e) => {
+  column.addEventListener("dragleave", () => {
+    column.classList.remove("hover-over");
+  });
+
+  column.addEventListener("dragover", (e) => {
     e.preventDefault();
-    box.classList.remove("draggable");
+  });
+
+  column.addEventListener("drop", (e) => {
+    e.preventDefault();
+    column.classList.remove("hover-over");
+
+    if (!dragElement) return;
+
+    const id = dragElement.dataset.id;
+
+    data = data.map((t) => (t.id === id ? { ...t, status } : t));
+
+    dragElement = null;
+    renderTasks();
+    saveData();
   });
 }
 
-dragStart(todo);
-dragStart(progress);
-dragStart(done);
+addDragEventOnColumn(todo, "todo");
+addDragEventOnColumn(progress, "progress");
+addDragEventOnColumn(done, "done");
 
 function createId() {
   return String(Date.now() + Math.floor(Math.random() * 1000));
 }
 
+function editTask(id) {
+  editingId = id;
+
+  const taskToEdit = data.find((t) => t.id === id);
+  if (!taskToEdit) return;
+
+  document.getElementById("task-name").value = taskToEdit.title;
+  document.getElementById("task-desc").value = taskToEdit.desc;
+
+  document.querySelector(".add-task-btn").textContent = "Update Task";
+
+  document.querySelector(".modal").classList.add("active");
+  document.getElementById("task-name").focus();
+}
+
+function renderTasks() {
+  const allColumns = [todo, progress, done];
+
+  allColumns.forEach((col) => {
+    col.querySelectorAll(".task").forEach((task) => task.remove());
+  });
+
+  data.forEach((task) => {
+    const taskElement = document.createElement("div");
+    taskElement.classList.add("task");
+    taskElement.dataset.id = task.id;
+    taskElement.setAttribute("draggable", "true");
+
+    taskElement.innerHTML = `
+      <h2>${task.title}</h2>
+      <p>${task.desc}</p>
+      <div class="task-actions">
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+      </div> 
+    `;
+
+    taskElement.querySelector(".delete-btn").addEventListener("click", () => {
+      deleteTask(task.id);
+    });
+
+    taskElement.querySelector(".edit-btn").addEventListener("click", () => {
+      editTask(task.id);
+    });
+
+    taskElement.addEventListener("dragstart", () => {
+      dragElement = taskElement;
+    });
+
+    let targetCol;
+    if (task.status === "progress") targetCol = progress;
+    else if (task.status === "done") targetCol = done;
+    else targetCol = todo;
+
+    targetCol.appendChild(taskElement);
+  });
+
+  allColumns.forEach((col) => {
+    const count = col.querySelector(".heading .right");
+    const totalTasks = col.querySelectorAll(".task").length;
+    count.innerText = totalTasks;
+  });
+}
+
 function addTask() {
-  let titleInput = document.getElementById("input-title");
-  let nameInput = document.getElementById("input-task");
-  let title = titleInput.value.trim();
-  let name = nameInput.value.trim();
-  if (!title || !name) {
+  let taskName = document.getElementById("task-name");
+  let taskDesc = document.getElementById("task-desc");
+  let Name = taskName.value.trim();
+  let Desc = taskDesc.value.trim();
+  if (!Name || !Desc) {
     alert("Please enter both values");
     return;
   }
@@ -38,29 +128,30 @@ function addTask() {
   if (editingId !== null) {
     data = data.map((task) => {
       if (task.id === editingId) {
-        return { ...task, title: title, desc: name };
+        return { ...task, title: Name, desc: Desc };
       } else {
         return task;
       }
     });
 
     editingId = null;
-    document.querySelector(".input-box").classList.add("hidden");
+    document.querySelector(".modal").classList.remove("active");
   } else {
     let user_data = {
       id: createId(),
-      title: title,
-      desc: name,
+      title: Name,
+      desc: Desc,
+      status: "todo",
       createdAt: Date.now(),
     };
 
     data.push(user_data);
   }
 
-  titleInput.value = "";
-  nameInput.value = "";
-  titleInput.focus();
-  document.getElementById("addTaskBtn").textContent = "Add Task";
+  document.querySelector(".add-task-btn").textContent = "Add Task";
+  taskName.value = "";
+  taskDesc.value = "";
+  document.querySelector(".modal").classList.remove("active");
   renderTasks();
 }
 function deleteTask(id) {
@@ -69,74 +160,39 @@ function deleteTask(id) {
   });
 
   renderTasks();
+  saveData();
 }
 
-function editTask(id) {
-  editingId = id;
-  let titleInput = document.getElementById("input-title");
-  let inputBox = document.querySelector(".input-box");
-  let nameInput = document.getElementById("input-task");
-  inputBox.classList.remove("hidden");
-  let editData = data.find((t) => {
-    return t.id === id;
-  });
-  titleInput.value = editData.title;
-  nameInput.value = editData.desc;
-  document.getElementById("addTaskBtn").textContent = "Update Task";
-  titleInput.focus();
-}
+const toggleModalBtn = document.querySelector("#toggle-modal");
+const modal = document.querySelector(".modal");
+const bg = document.querySelector(".bg");
 
-function renderTasks() {
-  const todoList = document.getElementById("todoList");
-  todoList.innerHTML = "";
-  const progressList = document.getElementById("progressList");
-  const doneList = document.getElementById("doneList");
-
-  data.forEach((task) => {
-    const taskElement = document.createElement("div");
-    taskElement.classList.add("task");
-    taskElement.setAttribute("id", `task${task.id}`);
-    taskElement.setAttribute("draggable", "true");
-    taskElement.innerHTML = `
-      <div class="task-content" >
-          <p class="task-desc">${task.desc}</p>
-          <p class="task-title">${task.title}</p>
-       </div>
-      <div class="task-btns">
-       <button class="editBtn" onclick = "editTask('${task.id}')">Edit</button>
-        <button class="deleteBtn" onclick = "deleteTask('${task.id}')">Delete</button>
-      </div>
-    `;
-
-    todoList.appendChild(taskElement);
-  });
-}
-
-document.getElementById("addBtn").addEventListener("click", () => {
+toggleModalBtn.addEventListener("click", () => {
   editingId = null;
-  let inputBox = document.querySelector(".input-box");
-  inputBox.classList.remove("hidden");
-  document.getElementById("addTaskBtn").textContent = "Add Task";
-  document.getElementById("input-title").value = "";
-  document.getElementById("input-task").value = "";
-  document.getElementById("input-title").focus();
+  document.getElementById("task-name").value = "";
+  document.getElementById("task-desc").value = "";
+  document.querySelector(".add-task-btn").textContent = "Add Task";
+  modal.classList.add("active");
+  document.getElementById("task-name").focus();
 });
 
-document.getElementById("closeBtn").addEventListener("click", () => {
-  let inputBox = document.querySelector(".input-box");
-  inputBox.classList.add("hidden");
-
-  document.getElementById("input-title").value = "";
-  document.getElementById("input-task").value = "";
+bg.addEventListener("click", () => {
+  modal.classList.remove("active");
   editingId = null;
+  document.querySelector(".add-task-btn").textContent = "Add Task";
 });
-document.getElementById("addTaskBtn").addEventListener("click", addTask);
 
-["input-title", "input-task"].forEach((id) => {
+document.getElementById("add-new-task").addEventListener("click", addTask);
+
+["task-name", "task-desc"].forEach((id) => {
   document.getElementById(id).addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      addTask();
-    }
+    if (e.key === "Enter") addTask();
   });
 });
+
+document.getElementById("task-desc").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && e.ctrlKey) addTask();
+});
+
+loadData();
 renderTasks();
