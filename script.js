@@ -2,6 +2,10 @@ let data = [];
 let editingId = null;
 let dragElement = null;
 
+const todo = document.getElementById("todo");
+const progress = document.getElementById("progress");
+const done = document.getElementById("done");
+
 function saveData() {
   localStorage.setItem("kanban-data", JSON.stringify(data));
 }
@@ -153,6 +157,7 @@ function addTask() {
   taskDesc.value = "";
   document.querySelector(".modal").classList.remove("active");
   renderTasks();
+  saveData();
 }
 function deleteTask(id) {
   data = data.filter((task) => {
@@ -186,12 +191,18 @@ document.getElementById("add-new-task").addEventListener("click", addTask);
 
 ["task-name", "task-desc"].forEach((id) => {
   document.getElementById(id).addEventListener("keydown", (e) => {
-    if (e.key === "Enter") addTask();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTask();
+    }
   });
 });
 
 document.getElementById("task-desc").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && e.ctrlKey) addTask();
+  if (e.key === "Enter" && e.ctrlKey) {
+    e.preventDefault();
+    addTask();
+  }
 });
 
 loadData();
